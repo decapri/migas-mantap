@@ -338,14 +338,14 @@ if (!isset($activePage)) $activePage = 'dashboard';
 <body class="antialiased">
 <div class="min-h-screen flex app-bg">
     <aside class="hidden lg:flex lg:flex-col app-sidebar lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:overflow-y-auto">
-        <div class="px-5 py-6 border-b" style="border-color: var(--color-divider);">
+        <div class="px-5 py-6" style="border-color: var(--color-divider);">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)); box-shadow: 0 12px 24px rgba(245,166,35,.24);">
                     <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 20V6.5A2.5 2.5 0 0 1 9.5 4h5A2.5 2.5 0 0 1 17 6.5V20"/><path d="M6 20h12"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M10 4V2h4v2"/></svg>
                 </div>
                 <div class="min-w-0">
                     <div class="text-lg font-bold leading-tight truncate" style="color: var(--color-heading);">Migas Investasi</div>
-                    <div class="text-xs mt-1 truncate" style="color: var(--color-muted);">Perhitungan NCF Sumur Migas</div>
+                    <div class="text-xs mt-1 truncate" style="color: var(--color-muted);">Perhitungan NCF</div>
                 </div>
             </div>
         </div>
@@ -362,16 +362,13 @@ if (!isset($activePage)) $activePage = 'dashboard';
         <div class="p-4 text-xs border-t" style="color: var(--color-muted); border-color: var(--color-divider);">© 2026 Sistem Informasi Migas</div>
     </aside>
 
-    <main class="app-main lg:ml-[16.5rem] min-w-0"">
-        <header class="app-topbar px-4 sm:px-6 lg:px-8 py-4 fixed top-0 left-0 right-0 lg:left-[16.5rem] z-40">
+    <main class="app-main lg:ml-[16.5rem] min-w-0">
+        <header class="app-topbar px-4 sm:px-6 lg:px-8 py-5 fixed top-0 left-0 right-0 lg:left-[16.5rem] z-40">
             <div class="app-content flex flex-col gap-3">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 min-w-0">
                     <div class="min-w-0">
                         <h1 class="text-xl md:text-2xl font-bold tracking-tight truncate" style="color: var(--color-heading);"><?= e($pageTitle) ?></h1>
                         <p class="text-sm leading-relaxed" style="color: var(--color-muted);">Sistem pengelolaan proyek sumur, produksi, pendapatan, pajak, dan net cash flow.</p>
-                    </div>
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-full text-white flex items-center justify-center font-bold shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));">U</div>
                     </div>
                 </div>
                 <nav class="lg:hidden flex gap-2 overflow-x-auto pb-1">

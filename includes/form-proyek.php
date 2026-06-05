@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NCF Oil Field Management</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ===== RESET & ROOT ===== */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,9 +13,9 @@ html{scroll-behavior:smooth}
   --border:#e2e8f0;
   --border2:#cbd5e1;
 
-  --accent:#2563eb;
-  --accent2:#2563eb;
-  --accent3:#1d4ed8;
+  --accent:#F5A623;
+  --accent2:#F5A623;
+  --accent3:#D88912;
 
   --amber:#d97706;
   --red:#dc2626;
@@ -33,9 +25,9 @@ html{scroll-behavior:smooth}
   --text2:#475569;
   --text3:#94a3b8;
 
-  --mono:'DM Mono',monospace;
-  --display:'Syne',sans-serif;
-  --body:'DM Sans',sans-serif;
+  --mono:'Plus Jakarta Sans', system-ui, sans-serif;
+--display:'Plus Jakarta Sans', system-ui, sans-serif;
+--body:'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 body{
@@ -202,11 +194,18 @@ select option{background:var(--bg2)}
 
 /* ===== BTN ===== */
 .btn-primary{
+  color:white;
+  box-shadow:0 12px 24px rgba(245,166,35,.25);
   display:inline-flex;align-items:center;gap:8px;
   padding:10px 26px;background:var(--accent2);border:none;
-  border-radius:8px;color:#081a0e;font-weight:600;font-size:14px;
+  border-radius:8px;
   cursor:pointer;font-family:var(--body);transition:all .18s;
+  width:100%;
+  max-width:100%;
+  justify-content:center;
+  padding:14px 26px;
 }
+
 .btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
 .btn-sec{
   display:inline-flex;align-items:center;gap:6px;
@@ -215,7 +214,11 @@ select option{background:var(--bg2)}
   cursor:pointer;font-family:var(--body);transition:all .18s;
 }
 .btn-sec:hover{background:var(--surface);border-color:var(--border2)}
-.btn-row{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.btn-row{
+  display:flex;
+  justify-content:center;
+  margin-top:24px;
+}
 
 /* ===== METRIC ===== */
 .metric{
@@ -306,8 +309,6 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
   .hero-title{font-size:22px}
 }
 </style>
-</head>
-<body>
 <div class="card">
     <div class="card-title">
         <div class="dot"></div>
@@ -315,23 +316,53 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
     </div>
 
     <div class="g2">
+        <?php
+        // $isEdit = true jika halaman edit (variabel $project tersedia dan punya data dari DB)
+        // Mode tambah baru: semua input kosong
+        // Mode edit: input terisi dari DB, bisa diubah
+        $isEdit = !empty($project['id']);
+
+        // $v() — kembalikan value dari DB saat edit, string kosong saat tambah baru
+        $v = function(string $key) use (&$project, $isEdit) {
+            if (!$isEdit) return '';
+            return htmlspecialchars((string)($project[$key] ?? ''), ENT_QUOTES);
+        };
+
+        // $sel() — tandai option selected saat edit, tidak ada yang selected saat tambah baru
+        $sel = function(string $opt) use (&$project, $isEdit) {
+            if (!$isEdit) return '';
+            return ($project['status_proyek'] ?? '') === $opt ? 'selected' : '';
+        };
+        ?>
         <div class="fg">
             <label>Nama Proyek</label>
-            <input type="text" id="nama_proyek"
+            <input type="text" id="nama_proyek" name="nama_proyek"
+                value="<?= $v('nama') ?>"
                 placeholder="Contoh: Pengembangan Lapangan Gunung Bakaran">
         </div>
 
         <div class="fg">
             <label>Nama Sumur</label>
-            <input type="text" id="nama_sumur"
+            <input type="text" id="nama_sumur" name="nama_sumur"
+                value="<?= $v('nama_sumur') ?>"
                 placeholder="Contoh: GB-01">
         </div>
     </div>
 
     <div class="fg" style="margin-top:12px">
         <label>Lokasi Lapangan</label>
-        <input type="text" id="lokasi"
+        <input type="text" id="lokasi" name="lokasi_lapangan"
+            value="<?= $v('lokasi_lapangan') ?>"
             placeholder="Contoh: Kalimantan Timur">
+    </div>
+
+    <div class="fg" style="margin-top:12px">
+        <label>Status Proyek</label>
+        <select id="status_proyek" name="status_proyek">
+            <option value="Direncanakan" <?= $sel('Direncanakan') ?>>Direncanakan</option>
+            <option value="Berjalan"     <?= $sel('Berjalan') ?>>Berjalan</option>
+            <option value="Selesai"      <?= $sel('Selesai') ?>>Selesai</option>
+        </select>
     </div>
 </div>
 
@@ -339,29 +370,55 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
   <div class="card">
     <div class="card-title"><div class="dot"></div>Identitas &amp; Parameter</div>
     <div class="g3" style="margin-bottom:12px">
-      <div class="fg"><label>Total cadangan (Mbbl)</label><input type="number" id="cadangan" value="4320"></div>
-      <div class="fg"><label>Harga minyak ($/bbl)</label><input type="number"  id="harga" value="32" step="0.5"></div>
-      <div class="fg"><label>Tahun perhitungan</label><input type="number" id="tahun" value="10" min="1" max="30" oninput="updDi()"></div>
+      <div class="fg"><label>Total cadangan (Mbbl)</label><input type="number" id="cadangan" name="cadangan_mbbl" value="<?= $v('cadangan_mbbl') ?>"></div>
+      <div class="fg"><label>Harga minyak ($/bbl)</label><input type="number" id="harga" name="harga_minyak" value="<?= $v('harga_minyak') ?>" step="0.5"></div>
+      <div class="fg"><label>Tahun perhitungan</label><input type="number" id="tahun" name="tahun_perhitungan" value="<?= $v('tahun_hitung') ?>" min="1" max="30" oninput="updDi()"></div>
     </div>
-    <div class="g2">
-      <div class="fg"><label>Tax rate (%)</label><input type="number" id="taxrate" value="51" step="0.1"></div>
-      <div class="fg"><label>Metode depresiasi</label><input type="text" value="Straight-line" disabled></div>
+   <div class="fg">
+      <label>Tax rate (%)</label>
+      <input type="number" id="taxrate" name="tax_rate" value="<?= $v('tax_rate') ?>" step="0.1">
     </div>
   </div>
 
-  <!-- INVESTASI -->
+ <!-- INVESTASI -->
   <div class="card">
     <div class="card-title"><div class="dot"></div>Investasi (Capex) <span class="tag tag-amber" style="margin-left:6px">Dasar Di</span></div>
     <div class="invest-box">
       <div class="invest-row">
-        <div class="fg"><label>Capital ($M)</label><input type="number" id="capital" value="13000" oninput="updDi()"></div>
-        <div class="fg"><label>Non-capital ($M)</label><input type="number" id="noncapital" value="8000" oninput="updDi()"></div>
+        <div class="fg"><label>Capital ($M)</label><input type="number" id="capital" name="capital" value="<?= $v('capital') ?>" oninput="updDi()"></div>
+        <div class="fg"><label>Non-capital ($M)</label><input type="number" id="noncapital" name="non_capital" value="<?= $v('non_capital') ?>" oninput="updDi()"></div>
       </div>
-      <div class="invest-total">
-        <span class="il">Total investasi</span>
-        <span class="iv" id="total-invest">$21,000.00 M</span>
+      <div style="padding-top:12px;border-top:1px solid var(--border)">
+        <div class="fg">
+          <label>Total investasi ($M)</label>
+          <input type="number" id="total-invest-input" name="total_investasi"
+            value="<?= $v('total_investasi') ?>"
+            style="font-size:14px;font-weight:500"
+            oninput="onManualTotal(this)"
+            placeholder="Otomatis dari Capital + Non-capital">
+          <span style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:3px" id="total-invest-hint">— otomatis dari Capital + Non-capital</span>
+        </div>
       </div>
-      <div class="di-note" id="di-note">Di (depresiasi/thn) = $21,000.00 M ÷ 10 = $2,100.00 M</div>
+    </div>
+  </div>
+
+  <!-- DEPRESIASI -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div>Depresiasi</div>
+    <div class="invest-box">
+      <div class="g2">
+        <div class="fg">
+          <label>Besar Depresiasi / Tahun ($M)</label>
+          <input type="number" id="depresiasi-val" disabled
+            style="font-size:14px;font-weight:500"
+            placeholder="—">
+        </div>
+        <div class="fg">
+          <label>Metode Depresiasi</label>
+          <input type="text" value="Straight-line" disabled>
+        </div>
+      </div>
+      <div class="di-note" id="di-note" style="margin-top:8px">—</div>
     </div>
   </div>
 
@@ -372,11 +429,11 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
       Input manual tahun-tahun yang diketahui. Sisanya dihitung dengan decline rate.
     </div>
     <div id="prod-list"></div>
-    <button class="btn-add" onclick="addProd()">+ Tambah tahun</button>
+    <button type="button" class="btn-add" onclick="addProd()">+ Tambah tahun</button>
     <div class="divider"></div>
     <div class="g2">
-      <div class="fg"><label>Mulai decline tahun ke-</label><input type="number" id="dec_start" value="5" min="1"></div>
-      <div class="fg"><label>Laju decline (%/tahun)</label><input type="number" id="dec_rate" value="3" step="0.1"></div>
+      <div class="fg"><label>Mulai decline tahun ke-</label><input type="number" id="dec_start" name="mulai_decline" value="<?= $v('mulai_tahun_ke') ?>" min="1"></div>
+      <div class="fg"><label>Laju decline (%/tahun)</label><input type="number" id="dec_rate" name="decline_rate" value="<?= $v('laju_persen') ?>" step="0.1"></div>
     </div>
   </div>
 
@@ -384,9 +441,9 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
   <div class="card">
     <div class="card-title"><div class="dot"></div>Parameter Opex</div>
     <div class="g3">
-      <div class="fg"><label>Opex base ($M/thn)</label><input type="number" id="opex_base" value="180"></div>
-      <div class="fg"><label>Berlaku s.d. tahun ke-</label><input type="number" id="opex_until" value="3" min="1"></div>
-      <div class="fg"><label>Eskalasi (%/thn)</label><input type="number" id="opex_esc" value="2.5" step="0.1"></div>
+      <div class="fg"><label>Opex base ($M/thn)</label><input type="number" id="opex_base" name="opex_base" value="<?= $v('base_usd_m') ?>"></div>
+      <div class="fg"><label>Berlaku s.d. tahun ke-</label><input type="number" id="opex_until" name="opex_until" value="<?= $v('base_hingga_thn') ?>" min="1"></div>
+      <div class="fg"><label>Eskalasi (%/thn)</label><input type="number" id="opex_esc" name="opex_eskalasi" value="<?= $v('eskalasi_persen') ?>" step="0.1"></div>
     </div>
     <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:8px">
       Mulai tahun ke-(base+1): Opex = base × (1 + eskalasi%)^n
@@ -425,8 +482,11 @@ tbody tr:hover td{background:rgba(61,220,132,.03)}
 <div class="toast" id="toast">✓ <span id="toast-msg"></span></div>
 
 <script>
-// ===================== STATE =====================
-let prods = [175, 201, 217, 198];
+// prods: kosong saat tambah baru, terisi dari DB saat edit
+let prods = <?= isset($produksiManual) && count($produksiManual) > 0
+    ? json_encode(array_values(array_map('floatval', $produksiManual)))
+    : '[]'
+?>;
 let lastResult = null;
 
 // ===================== NAV =====================
@@ -453,14 +513,44 @@ function fM(n) { return '$' + fmt(n) + ' M'; }
 function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
 
 // ===================== DI SUMMARY =====================
+let manualTotal = false;
+
 function updDi() {
   const cap = getVal('capital'), nc = getVal('noncapital');
   const yr = parseInt(document.getElementById('tahun').value) || 10;
-  const tot = cap + nc;
-  const di = tot / yr;
-  document.getElementById('total-invest').textContent = fM(tot);
-  document.getElementById('di-note').textContent =
-    `Di (depresiasi/thn) = ${fM(tot)} ÷ ${yr} = ${fM(di)}`;
+  const autoTot = cap + nc;
+
+  // Jika capital/noncapital diisi dan belum di-override manual, isi otomatis
+  if (!manualTotal && (cap > 0 || nc > 0)) {
+    document.getElementById('total-invest-input').value = autoTot || '';
+    document.getElementById('total-invest-hint').textContent = '— otomatis dari Capital + Non-capital';
+  }
+
+  const tot = manualTotal
+    ? (parseFloat(document.getElementById('total-invest-input').value) || 0)
+    : autoTot;
+
+  const di = yr > 0 ? tot / yr : 0;
+  document.getElementById('depresiasi-val').value = di > 0 ? di.toFixed(2) : '';
+  document.getElementById('di-note').textContent = tot > 0
+    ? `Di (depresiasi/thn) = ${fM(tot)} ÷ ${yr} = ${fM(di)}`
+    : '—';
+}
+
+function onManualTotal(el) {
+  const val = parseFloat(el.value);
+  const cap = getVal('capital'), nc = getVal('noncapital');
+  const autoTot = cap + nc;
+
+  // Anggap manual jika nilai berbeda dari auto, atau user mengosongkan (reset ke auto)
+  if (el.value === '' || (!isNaN(val) && Math.abs(val - autoTot) < 0.001 && cap + nc > 0)) {
+    manualTotal = false;
+    document.getElementById('total-invest-hint').textContent = '— otomatis dari Capital + Non-capital';
+  } else {
+    manualTotal = true;
+    document.getElementById('total-invest-hint').textContent = '— diisi manual';
+  }
+  updDi();
 }
 
 // ===================== PROD ROWS =====================
@@ -468,8 +558,8 @@ function renderProds() {
   document.getElementById('prod-list').innerHTML = prods.map((v, i) => `
     <div class="prod-item">
       <span>Tahun ${i + 1}</span>
-      <input type="number" value="${v}" onchange="prods[${i}]=parseFloat(this.value)||0">
-      ${i > 0 ? `<button class="btn-rm" onclick="prods.splice(${i},1);renderProds()">×</button>` : '<div></div>'}
+      <input type="number" name="produksi${i + 1}" value="${v}" onchange="prods[${i}]=parseFloat(this.value)||0">
+      ${i > 0 ? `<button type="button" class="btn-rm" onclick="prods.splice(${i},1);renderProds()">×</button>` : '<div></div>'}
     </div>`).join('');
 }
 function addProd() { prods.push(0); renderProds(); }
@@ -482,7 +572,7 @@ function calculate() {
   const taxRate = getVal('taxrate') / 100;
   const cap = getVal('capital');
   const nc = getVal('noncapital');
-  const totalInvest = cap + nc;
+  const totalInvest = parseFloat(document.getElementById('total-invest-input').value) || (cap + nc);
   const di = totalInvest / nYr;
   const decStart = parseInt(document.getElementById('dec_start').value) || 5;
   const decRate = getVal('dec_rate') / 100;
