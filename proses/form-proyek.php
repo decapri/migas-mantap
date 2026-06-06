@@ -86,6 +86,21 @@ body {
 /* ============================================================
    PAGE HEADER
    ============================================================ */
+.page-header {
+  margin-bottom: 28px;
+}
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--text);
+}
+.page-header h1 span { color: var(--accent); }
+.page-header p {
+  color: var(--text2);
+  font-size: 13px;
+  margin-top: 4px;
+}
 
 /* ============================================================
    2-COL × 3-ROW GRID
@@ -344,29 +359,25 @@ textarea::placeholder { color: var(--text3); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 26px;
-  width: 100%;
-  background: #E8960F;
+  gap: 10px;
+  padding: 15px 56px;
+  background: var(--accent2);
   color: #fff;
   font-family: var(--font);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: .01em;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(232,150,15,.45);
-  transition: background .18s, transform .15s, box-shadow .18s;
+  box-shadow: 0 8px 24px rgba(245,166,35,.30);
+  transition: background .18s, transform .18s, box-shadow .18s;
+  min-width: 260px;
 }
 .btn-submit:hover {
-  background: #C97D0A;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(232,150,15,.55);
-}
-.btn-submit:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(232,150,15,.35);
+  background: var(--accent3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(245,166,35,.38);
 }
 .btn-submit svg { width: 17px; height: 17px; flex-shrink: 0; }
 
@@ -386,6 +397,10 @@ textarea::placeholder { color: var(--text3); }
 <div class="form-page">
 
   <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Form <span>Proyek Baru</span></h1>
+    <p>Isi semua bagian untuk menghitung Net Cash Flow proyek migas.</p>
+  </div>
 
   <!-- ========================================================
        2-COL × 3-ROW GRID
@@ -463,6 +478,8 @@ textarea::placeholder { color: var(--text3); }
           <input type="text" value="Straight-line" disabled>
         </div>
       </div>
+
+      <div class="di-note" id="di-note">—</div>
     </div>
 
     <!-- ── ROW 2, COL 1 : Data Produksi dan OPEX ── -->
@@ -504,7 +521,7 @@ textarea::placeholder { color: var(--text3); }
         </div>
         <div>
           <div class="fcard-title">Data Keuangan</div>
-          <div class="fcard-sub">Investasi &amp; depresiasi</div>
+          <div class="fcard-sub">Investasi &amp; depresiasi <span class="badge badge-amber" style="margin-left:4px">Dasar Di</span></div>
         </div>
       </div>
 
@@ -528,7 +545,10 @@ textarea::placeholder { color: var(--text3); }
           style="font-weight:600"
           oninput="onManualTotal(this)"
           placeholder="Otomatis dari Capital + Non-Capital">
+        <span class="hint-text" id="total-invest-hint">— otomatis dari Capital + Non-Capital</span>
       </div>
+
+      <div class="hint-text" id="di-note2">—</div>
     </div>
 
     <!-- ── ROW 3, COL 1 : Identitas & Parameter (cadangan) ── -->
@@ -583,21 +603,6 @@ textarea::placeholder { color: var(--text3); }
         </div>
       </div>
 
-      <div class="fg-row col2">
-        <div class="fg">
-          <label>Berlaku s.d. Tahun ke-</label>
-          <input type="number" id="opex_until" name="opex_until"
-            value="<?= $v('base_hingga_thn') ?>" min="1"
-            placeholder="Cth: 3">
-        </div>
-        <div class="fg">
-          <label>Eskalasi (%/tahun)</label>
-          <input type="number" id="opex_esc" name="opex_eskalasi"
-            value="<?= $v('eskalasi_persen') ?>" step="0.1"
-            placeholder="Cth: 5">
-        </div>
-      </div>
-
       <div class="fg">
         <label>Opex Base ($M/tahun)</label>
         <input type="number" id="opex_base" name="opex_base"
@@ -605,13 +610,31 @@ textarea::placeholder { color: var(--text3); }
           placeholder="Cth: 180">
       </div>
 
+      <div class="fg">
+        <label>Berlaku s.d. Tahun ke-</label>
+        <input type="number" id="opex_until" name="opex_until"
+          value="<?= $v('base_hingga_thn') ?>" min="1"
+          placeholder="Cth: 3">
+      </div>
+
+      <div class="fg">
+        <label>Eskalasi (%/tahun)</label>
+        <input type="number" id="opex_esc" name="opex_eskalasi"
+          value="<?= $v('eskalasi_persen') ?>" step="0.1"
+          placeholder="Cth: 5">
+      </div>
+
+      <div class="opex-note">
+        Mulai tahun ke-(base+1): Opex = base × (1 + eskalasi%)^n
+      </div>
+
       <div style="flex:1; min-height:16px"></div>
 
       <div class="submit-row" style="margin-top:20px">
         <button type="button" class="btn-submit" onclick="calculate()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
           Simpan &amp; Hitung NCF
         </button>
-      </div>
       </div>
     </div>
 

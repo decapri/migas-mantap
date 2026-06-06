@@ -3,7 +3,7 @@ $host = 'localhost';
 $dbname = 'ncf_oilfield';
 $username = 'root';
 $password = '';
-$port = 3307;
+$port = 3306;
 
 try {
     $pdo = new PDO(
